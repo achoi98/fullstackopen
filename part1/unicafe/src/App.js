@@ -8,11 +8,6 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 )
 
-const DisplayStatistics = ({ text, value }) => <p>{text} {value}</p>
-
-const GetTotal = (props) => (
-  props.good + props.neutral + props.bad
-)
 
 const Average = ({ good, neutral, bad }) => {
   if (good === 0 && neutral === 0 && bad === 0) {
@@ -25,7 +20,7 @@ const Average = ({ good, neutral, bad }) => {
 
 const Positive = ({ good, total }) => {
   if (total === 0) return 0
-  return ((good / total) * 100 + ' %')
+  return (Math.round((good / total) * 100).toFixed(2) + ' %')
 }
 
 const Statistics = (props) => {
@@ -36,29 +31,31 @@ const Statistics = (props) => {
   if (good === 0 && neutral === 0 && bad === 0) return 'No feedback given'
   return (
     <table>
-      <tr>
-        <td>good</td>
-        <td>{good}</td>
-      </tr>
-      <tr>
-        <td>neutral</td>
-        <td>{neutral}</td>
-      </tr>
-        <tr><td>bad</td>
-        <td>{bad}</td>
-      </tr>
-      <tr>
-        <td>total</td>
-        <td>{good + neutral + bad}</td>
-      </tr>
-      <tr>
-        <td>average</td>
-        <td>{<Average good={good} neutral={neutral} bad={bad}/>}</td>
-      </tr>
-      <tr>
-        <td>positive</td>
-        <td>{<Positive good={good} total={good + neutral + bad} />}</td>
-      </tr>
+      <tbody>
+        <tr>
+          <td>good</td>
+          <td>{good}</td>
+        </tr>
+        <tr>
+          <td>neutral</td>
+          <td>{neutral}</td>
+        </tr>
+          <tr><td>bad</td>
+          <td>{bad}</td>
+        </tr>
+        <tr>
+          <td>total</td>
+          <td>{good + neutral + bad}</td>
+        </tr>
+        <tr>
+          <td>average</td>
+          <td>{<Average good={good} neutral={neutral} bad={bad}/>}</td>
+        </tr>
+        <tr>
+          <td>positive</td>
+          <td>{<Positive good={good} total={good + neutral + bad} />}</td>
+        </tr>
+        </tbody>
     </table>
   )
 }
