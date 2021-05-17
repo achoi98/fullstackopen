@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import backendService from './services/persons'
 
 const SearchFilter = (props) => {
   return (
@@ -34,7 +35,7 @@ const Person = (props) => {
   )
 }
 
-const Persons = (props) => {
+const DisplayPersons = (props) => {
   const filteredPersons = props.persons.filter(person => person.name.toLowerCase().includes(props.filterText.toLowerCase()))
   const mappedFilteredPersons = filteredPersons.map(person => <Person name={person.name} number={person.number} key={person.name} />)
   return (
@@ -50,6 +51,9 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter ] = useState('')
 
+  useEffect(() => {backendService.getAll().then(initialPersons => {setPersons(initialPersons)})},
+    [])
+  
   const addPerson = (event) => {
     event.preventDefault()
     if (persons.find(person => person.name === newName)) window.alert(`${newName} is already in the phonebook`)
@@ -58,11 +62,14 @@ const App = () => {
       name: newName,
       number: newNumber
       }
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      backendService.create(personObject).then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
     }
   }
+
 
   const handleNameChange = (event) => {
     console.log(event.target.value)
@@ -85,7 +92,7 @@ const App = () => {
       <h3>add a new person</h3>
       <PersonForm handleSubmit={addPerson} name={newName} number={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} filterText={newFilter} />
+      <DisplayPersons persons={persons} filterText={newFilter} />
     </div>
   )
 }
