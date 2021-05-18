@@ -1,13 +1,8 @@
 {
   "persons": [
     {
-      "name": "andrew choi2",
-      "number": "514-312-2222",
-      "id": 6
-    },
-    {
       "name": "and 1",
-      "number": "33",
+      "number": "514121",
       "id": 8
     },
     {
@@ -17,33 +12,8 @@
     },
     {
       "name": "restore",
-      "number": "35235242",
+      "number": "911",
       "id": 10
-    },
-    {
-      "name": "andrew choi ",
-      "number": "241",
-      "id": 11
-    },
-    {
-      "name": "a",
-      "number": "141",
-      "id": 12
-    },
-    {
-      "name": "b",
-      "number": "141412",
-      "id": 13
-    },
-    {
-      "name": "c",
-      "number": "4142",
-      "id": 14
-    },
-    {
-      "name": "d",
-      "number": "5121",
-      "id": 15
     }
   ]
 }

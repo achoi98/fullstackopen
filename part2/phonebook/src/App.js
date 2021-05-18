@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import backendService from './services/persons'
-import axios from 'axios'
 
 const SearchFilter = (props) => {
   return (
@@ -29,30 +28,15 @@ const PersonForm = (props) => {
     </div>
   )
 }
-const DeleteButton = (props) => {
-  return (
-    <button onClick={() => {
-      if (window.confirm(`Delete ${props.name}?`)) {
-      backendService.deleteP(props.id).then(response => {
-        if (response === 200) {
-          backendService.getAll().then(response => props.handle())
-        }
-      })  
-      }
-    }
-    }>
-      delete
-    </button>
-  )
-}
+
 const Person = (props) => {
   return (
-    <div><p>{props.name}  {props.number} {props.deleteButton}</p></div>
+    <div><p>{props.name} : {props.number} <button id={props.id} onClick={props.handleDelete}>delete</button></p></div>
   )
 }
 const DisplayPersons = (props) => {
   const filteredPersons = props.persons.filter(person => person.name.toLowerCase().includes(props.filterText.toLowerCase()))
-  const mappedFilteredPersons = filteredPersons.map(person => <Person name={person.name} number={person.number} key={person.name} id={person.id} deleteButton={<DeleteButton name={person.name} id={person.id} handle={props.handle}/>}/>)
+  const mappedFilteredPersons = filteredPersons.map(person => <Person name={person.name} number={person.number} key={person.name} id={person.id} handleDelete={props.handle}/>)
   return (
     <div>
       {mappedFilteredPersons}
@@ -60,35 +44,53 @@ const DisplayPersons = (props) => {
   )
 }
 
-const App = () => {
-  const [ persons, setPersons ] = useState([])
-  const [ newName, setNewName ] = useState('')
-  const [ newNumber, setNewNumber ] = useState('')
-  const [ newFilter, setNewFilter ] = useState('')
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
 
-  useEffect(() => {backendService.getAll().then(initialPersons => {setPersons(initialPersons)})},
+const App = () => {
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [newFilter, setNewFilter] = useState('')
+  const [newNotification, setNewNotification] = useState(null)
+
+  useEffect(() => { backendService.getAll().then(initialPersons => { setPersons(initialPersons) }) },
     [])
-  
+
   const addPerson = (event) => {
     event.preventDefault()
     const oldP = persons.find(match => match.name.toLowerCase() === newName.toLowerCase())
     if (oldP !== undefined) {
       if (window.confirm(`${newName} is already in the phonebook, update the number?`)) {
         const newP = { ...oldP, number: newNumber }
-        //console.log(newP)
-        //console.log(newP.id)
-                backendService.changeN(newP).then(response => backendService.getAll().then(upd => setPersons(upd)))
-            }
+        backendService.changeN(newP).then(response => backendService.getAll().then(upd => setPersons(upd)))
+        setNewNotification(`Number of '${newP.name}' changed to ${newP.number}`)
+        setTimeout(() => {
+          setNewNotification(null)
+        }, 5000)
+      }
     }
     else {
       const personObject = {
-      name: newName,
-      number: newNumber
+        name: newName,
+        number: newNumber
       }
       backendService.create(personObject).then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setNewNotification(`Added ${returnedPerson.name}`)
+        setTimeout(() => {
+          setNewNotification(null)
+        }, 5000)
       })
     }
   }
@@ -108,20 +110,45 @@ const App = () => {
     //console.log(event.target.value)
     setNewFilter(event.target.value)
   }
-  const handleDeleteChange = () => {
+  const handleDeleteChange = (event) => {
+    const targetID = event.target.id
+    const targetPerson = persons.find(p => Number(p.id) === Number(targetID))
+    if (window.confirm(`Delete ${targetPerson.name} from the phonebook?`)) {
+      backendService.deleteP(targetID).then(response => {
+        if (response === 200) {
+          backendService.getAll().then(response => setPersons(response))
+        }
+      }).catch(error => {
+        backendService.getAll().then(response => setPersons(response))
+        setNewNotification(`${targetPerson.name} has already been removed from the phonebook`)
+      })
+      setTimeout(() => {
+        setNewNotification(null)
+      }, 5000)
+    }
     //console.log('handleDeleteChange')
-    axios.get('http://localhost:3001/persons').then(response => setPersons(response.data))
-    
   }
 
+  const handleTestClick = (event) => {
+    console.log(event.target.id)
+  }
+
+  const testButton = (
+    <div>
+      <button onClick={handleTestClick} id='2'>test</button>
+    </div>
+  )
+  
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      {testButton}
+      <Notification message={newNotification} />
       <SearchFilter value={newFilter} handle={handleFilterChange} />
-      <h3>add a new person</h3>
+      <h2>add a new person</h2>
       <PersonForm handleSubmit={addPerson} name={newName} number={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
-      <h3>Numbers</h3>
-      <DisplayPersons persons={persons} filterText={newFilter} handle={handleDeleteChange}/>
+      <h2>Numbers</h2>
+      <DisplayPersons persons={persons} filterText={newFilter} handle={handleDeleteChange} />
     </div>
   )
 }
