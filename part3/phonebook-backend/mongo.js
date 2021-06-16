@@ -24,12 +24,13 @@ if (process.argv.length = 3) {
         result.forEach(person => {
             console.log(person.name, person.number)
         })
+        mongoose.connection.close()
     })
 }
 
-else if (process.argv.length = 5) {
+//else if (process.argv.length = 5) {
 
-}
+
 /*
 const person = new Person({
     id: 1,
