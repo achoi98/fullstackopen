@@ -17,8 +17,9 @@ const DeleteP = id => {
 }
 
 const ChangeNumber = newNum => {
-    //console.log(newNum)
-    const url = `http://localhost:3001/persons/${newNum.id}`
+    console.log('newNumber:', newNum)
+    const url = `http://localhost:3001/api/persons/${newNum.id}`
+    console.log('url:', url)
     const request = axios.put(url, newNum)
     return request.then(response => response.data)
 }

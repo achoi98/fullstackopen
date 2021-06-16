@@ -69,6 +69,7 @@ const App = () => {
     event.preventDefault()
     const oldP = persons.find(match => match.name.toLowerCase() === newName.toLowerCase())
     if (oldP !== undefined) {
+      console.log('old entry:', oldP)
       if (window.confirm(`${newName} is already in the phonebook, update the number?`)) {
         const newP = { ...oldP, number: newNumber }
         backendService.changeN(newP).then(response => backendService.getAll().then(upd => setPersons(upd)))

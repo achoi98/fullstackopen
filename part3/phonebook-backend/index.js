@@ -99,6 +99,27 @@ app.post('/api/persons', (request, response) => {
     })
 })
 
+// update entry with new number
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    if (!body) {
+        return response.status(400).json({
+            error: 'invalid content'
+        })
+    }
+    console.log('body:', body)
+    const newPerson = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(request.params.newNum.id, newPerson, { new: true })
+    .then(updatedPerson => {
+        response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
