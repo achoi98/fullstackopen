@@ -23,9 +23,11 @@ const ChangeNumber = newNum => {
     const request = axios.put(url, newNum)
     return request.then(response => response.data)
 }
-export default {
+
+const exportedObject = {
     getAll: GetAll,
     create: Create,
     deleteP: DeleteP,
     changeN: ChangeNumber
 }
+export default exportedObject

@@ -12,33 +12,9 @@ app.use(cors())
 
 app.use(morgan((tokens, req, res) => {
     if (req.method === 'POST') {
-        return (`${req.method} ${req.url} ${req.response} ${JSON.stringify(req.body)}`)
+        return (`${req.method} ${req.url} ${res} ${JSON.stringify(req.body)}`)
     }
 }))
-
-/*
-let persons = [
-    {
-        id: 1,
-        name: "Andrew Choi",
-        number: "(514)-813-3829"
-    },
-    {
-        id: 2,
-        name: "Billy Bob",
-        number: "6969"
-    }
-]
-*/
-
-/*
-app.get('/info', (request, response) => {
-    const count = persons.length
-    const date = new Date()
-    const text = `<div><p>Phonebook has information for ${count} people</p><p>${date}</p></div>`
-    response.send(text) 
-})
-*/
 
 
 app.get('/api/persons', (request, response) => {
@@ -58,22 +34,22 @@ app.get('/api/persons/:id', (request, response, next) => {
             response.status(404).end()
         }
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-    .then(result => {
-        response.status(204).end()
-    })
-    .catch(error => next)
+        .then(() => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 //const generateID = () => (Math.floor(Math.random() * 1000000))
 
 
 // create new person
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
     if (!body) {
@@ -81,8 +57,8 @@ app.post('/api/persons', (request, response) => {
             error: 'invalid content'
         })
     }
-    if (!body.name) return response.status(400).json({error: 'invalid name'})
-    if (!body.number) return response.status(400).json({error: 'invalid number'})
+    if (!body.name) return response.status(400).json({ error: 'invalid name' })
+    if (!body.number) return response.status(400).json({ error: 'invalid number' })
     //if (persons.find(person => Number(person.number) === Number(body.number))) return response.status(400).json({error: 'this number is already in the phonebook'})
 
     // person objects are created with Person constructor
@@ -94,9 +70,14 @@ app.post('/api/persons', (request, response) => {
     // response is sent inside of callback function for save()
     // savedPerson param is the saved and newly created person
     // data sent back in response is formatted version created with toJSON method
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
-    })
+    person.save()
+        .then(savedPerson => {
+            return savedPerson.toJSON()
+        })
+        .then(savedAndFormattedPerson => {
+            response.json(savedAndFormattedPerson)
+        })
+        .catch(error => next(error))
 })
 
 // update entry with new number
@@ -115,10 +96,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     }
 
     Person.findByIdAndUpdate(body.id, newPerson, { new: true })
-    .then(updatedPerson => {
-        response.json(updatedPerson)
-    })
-    .catch(error => next(error))
+        .then(updatedPerson => {
+            response.json(updatedPerson)
+        })
+        .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
@@ -132,6 +113,9 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
+    }
+    else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
