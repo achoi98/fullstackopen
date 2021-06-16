@@ -63,7 +63,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-    .then(resulst => {
+    .then(result => {
         response.status(204).end()
     })
     .catch(error => next)
@@ -101,6 +101,7 @@ app.post('/api/persons', (request, response) => {
 
 // update entry with new number
 app.put('/api/persons/:id', (request, response, next) => {
+    console.log('body:', request.body)
     const body = request.body
     if (!body) {
         return response.status(400).json({
@@ -113,7 +114,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         number: body.number
     }
 
-    Person.findByIdAndUpdate(request.params.newNum.id, newPerson, { new: true })
+    Person.findByIdAndUpdate(body.id, newPerson, { new: true })
     .then(updatedPerson => {
         response.json(updatedPerson)
     })
@@ -127,7 +128,7 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
-    console.error(error.message)
+    console.error('error message:', error.message)
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
