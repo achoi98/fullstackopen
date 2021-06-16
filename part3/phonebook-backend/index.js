@@ -1,7 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
+
+const Person = require('./models/person')
+const PORT = process.env.PORT
 
 app.use(express.json())
 app.use(express.static('build'))
@@ -12,6 +16,8 @@ app.use(morgan((tokens, req, res) => {
         return (`${req.method} ${req.url} ${req.response} ${JSON.stringify(req.body)}`)
     }
 }))
+
+/*
 let persons = [
     {
         id: 1,
@@ -24,32 +30,33 @@ let persons = [
         number: "6969"
     }
 ]
+*/
 
+/*
 app.get('/info', (request, response) => {
     const count = persons.length
     const date = new Date()
     const text = `<div><p>Phonebook has information for ${count} people</p><p>${date}</p></div>`
     response.send(text) 
 })
+*/
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello Wosssrld!</h>')
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(p => p.id === id)
 
-    if (person) {
+// use mongoose findById to fetch individual person
+app.get('/api/persons/:id', (request, response) => {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    }
-    else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -58,27 +65,34 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-const generateID = () => (Math.floor(Math.random() * 1000000))
+//const generateID = () => (Math.floor(Math.random() * 1000000))
 
+
+// create new person
 app.post('/api/persons', (request, response) => {
     const body = request.body
+
     if (!body) {
         return response.status(400).json({
-            error: 'invalid submission'
+            error: 'invalid content'
         })
     }
     if (!body.name) return response.status(400).json({error: 'invalid name'})
     if (!body.number) return response.status(400).json({error: 'invalid number'})
-    if (persons.find(person => Number(person.number) === Number(body.number))) return response.status(400).json({error: 'this number is already in the phonebook'})
-    const person = {
-        id: generateID(),
+    //if (persons.find(person => Number(person.number) === Number(body.number))) return response.status(400).json({error: 'this number is already in the phonebook'})
+
+    // person objects are created with Person constructor
+    const person = new Person({
         name: body.name,
         number: body.number
-    }
+    })
 
-    persons = persons.concat(person)
-    response.json(person)
+    // response is sent inside of callback function for save()
+    // savedPerson param is the saved and newly created person
+    // data sent back in response is formatted version created with toJSON method
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
-const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log(`Server running on ${PORT}`))
