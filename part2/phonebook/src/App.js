@@ -110,12 +110,17 @@ const App = () => {
     //console.log(event.target.value)
     setNewFilter(event.target.value)
   }
+
   const handleDeleteChange = (event) => {
     const targetID = event.target.id
-    const targetPerson = persons.find(p => Number(p.id) === Number(targetID))
+    console.log('targetID:', targetID)
+    console.log('persons', persons)
+    const targetPerson = persons.find(p => p.id === targetID)
+    console.log('targetPerson', targetPerson)
     if (window.confirm(`Delete ${targetPerson.name} from the phonebook?`)) {
       backendService.deleteP(targetID).then(response => {
-        if (response === 200) {
+        console.log('response:', response)
+        if (response === 204) {
           backendService.getAll().then(response => setPersons(response))
         }
       }).catch(error => {
