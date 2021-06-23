@@ -13,11 +13,15 @@ const blogSchema = new mongoose.Schema({
         required: true
     },
     url: {
-        type:String,
+        type: String,
         unique: true,
         required: true
+    },
+    likes: {
+        type: Number
     }
 })
+blogSchema.plugin(uniqueValidator)
 
 blogSchema.set('toJSON', {
     transform: (document, returnedObject) => {
