@@ -4,7 +4,7 @@
   "description": "application to manage a list of blogs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -19,6 +19,10 @@
   },
   "devDependencies": {
     "eslint": "^7.28.0",
+    "jest": "^27.0.5",
     "nodemon": "^2.0.7"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
