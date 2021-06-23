@@ -2,7 +2,7 @@
 const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
-const personSchema = new mongoose.Schema( {
+const personSchema = new mongoose.Schema({
     name: {
         type: String,
         minlength: 3,
