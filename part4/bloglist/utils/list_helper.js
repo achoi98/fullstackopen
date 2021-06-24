@@ -13,7 +13,7 @@ const favoriteBlog = (blogs) => {
         else return previousValue
     }
     const favorite = blogs.reduce(reducer, { 'likes': -1 })
-    console.log('favorite blog:',favorite)
+    //console.log('favorite blog:',favorite)
     if (favorite.likes > -1) return {
         'title': favorite.title,
         'author': favorite.author,
