@@ -11,7 +11,7 @@ const Blog = require('../models/blog')
 // ensures the db is in the same state before every test is run
 beforeEach(async () => {
     await Blog.deleteMany({})
-    console.log('cleared')
+    //console.log('cleared')
 
     const blogObjects = helper.initialBlogs
         .map(blog => new Blog(blog))
@@ -33,6 +33,11 @@ test('all blogs are returned', async () => {
     expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
+// 4.9 verify blogs are identified by id
+test('blogs are identified by the id', async () => {
+    const response = await api.get('/api/blogs')
+    response.body.forEach(blog => expect(blog.id).toBeDefined())
+})
 test('a specific blog is within the returned blogs', async () => {
     const response = await api.get('/api/blogs')
 
@@ -42,6 +47,7 @@ test('a specific blog is within the returned blogs', async () => {
     )
 })
 
+// 4.10 verify HTTP POST requests to /api/blogs
 test('a valid blog can be added', async () => {
     const newBlog = {
         title: 'a new blog',
@@ -65,6 +71,27 @@ test('a valid blog can be added', async () => {
     )
 })
 
+// 4.11 'likes' defaults to 0
+test('blog with undefined likes is defaulted to 0', async () => {
+    const newBlog = {
+        title: 'newblog',
+        author: 'author5',
+        url: 'wq'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const blogs = await api.get('/api/blogs')
+    //console.log('blogs:', blogs.body)
+    const blog = blogs.body.find(b => b.title === 'newblog')
+    //console.log('blog:', blog)
+    expect(blog.likes).toBe(0)
+})
+
 test('blog without title is not added', async () => {
     const newBlog = {
         author: 'an author',
@@ -80,6 +107,20 @@ test('blog without title is not added', async () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
+test('blog without author is not added', async () => {
+    const newBlog = {
+        title: 'sucka deez nutz',
+        url: 'www.huehuehue.com'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
 test('a specific blog can be viewed', async () => {
     const blogsAtStart = await helper.blogsInDb()
 
