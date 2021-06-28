@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFuZHJld2Nob2kiLCJpZCI6IjYwZDkwZjc0YmZkY2U3ZTM3ZjE3ZGE4OCIsImlhdCI6MTYyNDg0MzUwMn0.qTJ7QyvLIpZ0IWGc5WqhEgHgek_Vx_NAPgXsmzeAuDY
 
 {
-    "title": "another blog post to be deleted",
+    "title": "user middleware",
     "author": "joe mamar",
-    "url": "www.222.com"
+    "url": "www.22222.com"
 }
