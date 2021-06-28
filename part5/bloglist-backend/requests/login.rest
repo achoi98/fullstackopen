@@ -1,9 +1,0 @@
-post http://localhost:3003/api/blogs
-Content-Type: application/json
-Authorization: 
-
-{
-    "title": "blog post to be deleted",
-    "author": "joe mamar",
-    "url": "www.oeeoooo.com"
-}
