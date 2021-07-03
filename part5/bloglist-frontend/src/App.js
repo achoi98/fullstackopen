@@ -47,7 +47,6 @@ const App = () => {
     }
   }
   
-  
   const submitLogin = async (userObject) => {
     try {
       const newUser = await loginService.login(userObject)
@@ -100,14 +99,26 @@ const App = () => {
       </div>
     )
   }
+
+  /*
+  const sortedBlogs = () => {
+    const unsorted = blogs.map(blog => blog)
+    const sorted = unsorted.sort((a, b) => { return a.likes - b.likes })
+    
+    return (
+      sorted.map(blog => <Blog key={blog.id} blog={blog} />)
+    )
+  }
+  */
+
   return (
     <div>
       <h2>blogs</h2>
       <Notification message={notificationMessage} />
       <p>{user.name} logged in</p>
-      {blogs.map(blog =>
+      {blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
         <Blog key={blog.id} blog={blog} />
-      )}
+        )}
       <div>
         {blogForm()}
       </div>
