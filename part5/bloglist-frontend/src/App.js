@@ -130,7 +130,7 @@ const App = () => {
       <Notification message={notificationMessage} />
       <p>{user.name} logged in</p>
       {blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
-        <Blog key={blog.id} blog={blog} handleRemove={removeBlog} />
+        <Blog key={blog.id} blog={blog} handleRemove={removeBlog} username={user.username} />
         )}
       <div>
         {blogForm()}

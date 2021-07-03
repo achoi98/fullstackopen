@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
 
-const Blog = ({ blog, handleRemove }) => {
+const Blog = ({ blog, handleRemove, username }) => {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
   const hideWhenVisible = { display: visible ? 'none' : '' }
-  //const showDelete = {}
+  const displayDelete = { display: (username === blog.user.username) ? '' : 'none'}
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -18,7 +18,7 @@ const Blog = ({ blog, handleRemove }) => {
   const toggleVisibility = () => {
     setVisible(!visible)
   }
-
+  console.log('username:', username, ' blog username:', blog.user.username)
   const handleLike = async () => {
     const blogId = blog.id
     console.log('(handleLike)blog:', blog)
@@ -65,7 +65,7 @@ const Blog = ({ blog, handleRemove }) => {
           Submitted by {blog.user ? blog.user.username : 'unknown' }
         </div>
         <button onClick={toggleVisibility} style={showWhenVisible}>hide</button>
-        <button onClick={handleDelete}>delete</button>
+        <button onClick={handleDelete} style={displayDelete}>delete</button>
       </div>
     </div>
   )
