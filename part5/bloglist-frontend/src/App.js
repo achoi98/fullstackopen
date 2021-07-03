@@ -36,6 +36,7 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const returnedBlog = await blogService.create(blogObject)
+      console.log('(addBlog)response:', returnedBlog)
       setBlogs(blogs.concat(returnedBlog))
       setNewNotificationMessage(`a new blog '${returnedBlog.title}' by ${returnedBlog.author} has been added`)
       setTimeout(() => {
@@ -44,6 +45,18 @@ const App = () => {
     }
     catch (exception) {
       console.log('exception:', exception)
+    }
+  }
+
+  const removeBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId)
+      const updatedBlogs = await blogService.getAll()
+      console.log('(removeBlog)updatedBlogs:', updatedBlogs)
+      setBlogs(updatedBlogs)
+    }
+    catch (exception) {
+      console.log('(removeBlog)exception:', exception)
     }
   }
   
@@ -117,7 +130,7 @@ const App = () => {
       <Notification message={notificationMessage} />
       <p>{user.name} logged in</p>
       {blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleRemove={removeBlog} />
         )}
       <div>
         {blogForm()}

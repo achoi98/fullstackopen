@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+
+const Blog = ({ blog, handleRemove }) => {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
   const hideWhenVisible = { display: visible ? 'none' : '' }
-
+  //const showDelete = {}
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -40,6 +41,15 @@ const Blog = ({ blog }) => {
       console.log('exception:', exception)
     }
   }
+
+  
+  const handleDelete = () => {
+    if (window.confirm(`delete blog ${blog.title}`)) {
+      handleRemove(blog.id)
+    }
+  }
+  
+
   //console.log(blog)
   return (
     <div style={blogStyle}>
@@ -55,6 +65,7 @@ const Blog = ({ blog }) => {
           Submitted by {blog.user ? blog.user.username : 'unknown' }
         </div>
         <button onClick={toggleVisibility} style={showWhenVisible}>hide</button>
+        <button onClick={handleDelete}>delete</button>
       </div>
     </div>
   )

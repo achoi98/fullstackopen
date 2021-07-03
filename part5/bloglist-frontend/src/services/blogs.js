@@ -30,7 +30,29 @@ const update = async (newObject) => {
     headers: { Authorization: token }
   }
   const blogUrl = `${baseUrl}/${newObject.id}`
-  const response = await axios.put(blogUrl, newObject, config)
-  return response.data
+  try {
+    const response = await axios.put(blogUrl, newObject, config)
+    console.log('(update)response.data:', response.data)
+    return response.data
+  }
+  catch (exception) {
+    console.log('(update)exception:', exception)
+  }
 }
-export default { getAll, create, setToken, update }
+
+const remove = async (blogId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const blogUrl = `${baseUrl}/${blogId}`
+  try {
+    const response = await axios.delete(blogUrl, config)
+    console.log('(remove)response:', response)
+  }
+  catch (exception) {
+    console.log('(remove)exception:', exception)
+  }
+}
+
+
+export default { getAll, create, setToken, update, remove }
