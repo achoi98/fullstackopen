@@ -7,7 +7,7 @@ const Blog = ({ blog, handleRemove, username }) => {
   const [likes, setLikes] = useState(blog.likes)
   const showWhenVisible = { display: visible ? '' : 'none' }
   const hideWhenVisible = { display: visible ? 'none' : '' }
-  const displayDelete = { display: (username === blog.user.username) ? '' : 'none'}
+  const displayDelete = { display: (username === blog.user.username) ? '' : 'none' }
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -18,7 +18,7 @@ const Blog = ({ blog, handleRemove, username }) => {
   const toggleVisibility = () => {
     setVisible(!visible)
   }
-  console.log('username:', username, ' blog username:', blog.user.username)
+  //console.log('username:', username, ' blog username:', blog.user.username)
   const handleLike = async () => {
     const blogId = blog.id
     console.log('(handleLike)blog:', blog)
@@ -42,18 +42,18 @@ const Blog = ({ blog, handleRemove, username }) => {
     }
   }
 
-  
+
   const handleDelete = () => {
     if (window.confirm(`delete blog ${blog.title}`)) {
       handleRemove(blog.id)
     }
   }
-  
+
 
   //console.log(blog)
   return (
     <div style={blogStyle}>
-      Title: "{blog.title}" Author: "{blog.author}" <button onClick={toggleVisibility} style={hideWhenVisible}>view</button>
+      Title: {blog.title} Author: {blog.author} <button onClick={toggleVisibility} style={hideWhenVisible}>view</button>
       <div style={showWhenVisible}>
         <div>
           Link: {blog.url}
@@ -70,5 +70,5 @@ const Blog = ({ blog, handleRemove, username }) => {
     </div>
   )
 }
- 
+
 export default Blog

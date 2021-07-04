@@ -9,7 +9,7 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  // app state for user 
+  // app state for user
   const [user, setUser] = useState(null)
   // app state for notification message
   const [notificationMessage, setNewNotificationMessage] = useState([])
@@ -19,10 +19,9 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
-  // 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
@@ -59,7 +58,7 @@ const App = () => {
       console.log('(removeBlog)exception:', exception)
     }
   }
-  
+
   const submitLogin = async (userObject) => {
     try {
       const newUser = await loginService.login(userObject)
@@ -87,7 +86,7 @@ const App = () => {
   const loginForm = () => (
     <Togglable buttonLabel="log in">
       <LoginForm
-      submitLogin={submitLogin}
+        submitLogin={submitLogin}
       />
     </Togglable>
   )
@@ -97,7 +96,7 @@ const App = () => {
   )
 
   const blogForm = () => (
-    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+    <Togglable buttonLabel="create a blog post" ref={blogFormRef}>
       <BlogForm createBlog={addBlog}
       />
     </Togglable>
@@ -117,7 +116,7 @@ const App = () => {
   const sortedBlogs = () => {
     const unsorted = blogs.map(blog => blog)
     const sorted = unsorted.sort((a, b) => { return a.likes - b.likes })
-    
+
     return (
       sorted.map(blog => <Blog key={blog.id} blog={blog} />)
     )
@@ -131,7 +130,7 @@ const App = () => {
       <p>{user.name} logged in</p>
       {blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
         <Blog key={blog.id} blog={blog} handleRemove={removeBlog} username={user.username} />
-        )}
+      )}
       <div>
         {blogForm()}
       </div>
