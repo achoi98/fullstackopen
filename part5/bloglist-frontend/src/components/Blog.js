@@ -52,9 +52,9 @@ const Blog = ({ blog, handleRemove, username }) => {
 
   //console.log(blog)
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       Title: {blog.title} Author: {blog.author} <button onClick={toggleVisibility} style={hideWhenVisible}>view</button>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="showWhenVisible">
         <div>
           Link: {blog.url}
         </div>
