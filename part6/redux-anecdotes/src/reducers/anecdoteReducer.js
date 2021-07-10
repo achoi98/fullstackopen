@@ -33,7 +33,7 @@ const reducer = (state = initialState, action) => {
 
 export const createAnecdote = (anecdote) => {
   return {
-    type: 'NEW_NOTE',
+    type: 'NEW_ANECDOTE',
     data: asObject(anecdote)
   }
 }
