@@ -8,6 +8,7 @@ import App from './App'
 import noteReducer from './reducers/noteReducer'
 import filterReducer from './reducers/filterReducer'
 
+
 const reducer = combineReducers({
   notes: noteReducer,
   filter: filterReducer
@@ -16,7 +17,8 @@ const reducer = combineReducers({
 const store = createStore(
   reducer,
   composeWithDevTools()
-  )
+)
+
 
 ReactDOM.render(
   
