@@ -1,6 +1,5 @@
-
+import blogService from '../services/blogs'
 const blogReducer = (state = [], action) => {
-  console.log('ACTION:', action)
   switch (action.type) {
   case 'NEW_BLOG':
     return [...state, action.data]
@@ -12,17 +11,23 @@ const blogReducer = (state = [], action) => {
 }
 
 
-export const createBlog = (data) => {
-  return {
-    type: 'NEW_BLOG',
-    data
+export const createBlog = (blogObject) => {
+  return async dispatch => {
+    const newBlog = await blogService.create(blogObject)
+    dispatch({
+      type: 'NEW_BLOG',
+      data: newBlog
+    })
   }
 }
 
-export const initializeBlogs = (blogs) => {
-  return {
-    type: 'INIT_BLOGS',
-    data: blogs
+export const initializeBlogs = () => {
+  return async dispatch => {
+    const blogs = await blogService.getAll()
+    dispatch({
+      type: 'INIT_BLOGS',
+      data: blogs
+    })
   }
 }
 

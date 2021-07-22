@@ -8,7 +8,8 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-
+import Blogs from './components/Blogs'
+import { initializeBlogs } from './reducers/blogReducer'
 /*
 const initialBlogs = [
   {
@@ -45,10 +46,8 @@ const App = () => {
   // initial rendering of blogs
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
 
   useEffect(() => {
@@ -149,7 +148,7 @@ const App = () => {
     )
   }
   */
-
+  const hideBlogs = false
   return (
     <div>
       <h2>blogs</h2>
@@ -157,9 +156,12 @@ const App = () => {
       <p>{user.name} logged in</p>
       {/*console.log(store.getState())*/}
       {/*store.getState().map(blog => <div key={blog.url}>{blog.title}   {blog.author}</div>)*/}
-      {blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
+      {hideBlogs && blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
         <Blog key={blog.id} blog={blog} handleRemove={removeBlog} username={user.username} />
       )}
+      <div>
+        <Blogs />
+      </div>
       <div>
         {blogForm()}
       </div>
