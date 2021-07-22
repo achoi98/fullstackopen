@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { clearNotification, setNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -7,20 +9,47 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
+/*
+const initialBlogs = [
+  {
+    title: 'blog 1',
+    author: 'author 1',
+    url: 'url 1'
+  },
+  {
+    title: 'blog 2',
+    author: 'author 2',
+    url: 'url 2'
+  }
+]
+
+const blogReducer = (state = initialBlogs, action) => {
+  switch (action.type) {
+  case 'NEW_BLOG':
+    return [...state, action.data]
+  case 'INIT_BLOGS':
+    return state
+  default:
+    return state
+  }
+}
+*/
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
   // app state for user
   const [user, setUser] = useState(null)
-  // app state for notification message
-  const [notificationMessage, setNewNotificationMessage] = useState([])
+
   const blogFormRef = useRef()
 
   // initial rendering of blogs
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
   }, [])
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -37,15 +66,14 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
       console.log('(addBlog)response:', returnedBlog)
       setBlogs(blogs.concat(returnedBlog))
-      setNewNotificationMessage(`a new blog '${returnedBlog.title}' by ${returnedBlog.author} has been added`)
-      setTimeout(() => {
-        setNewNotificationMessage(null)
-      }, 3000)
+      dispatch(setNotification(`a new blog '${returnedBlog.title}' by ${returnedBlog.author} has been added`))
+      setTimeout(() => dispatch(clearNotification()), 3000)
     }
     catch (exception) {
       console.log('exception:', exception)
     }
   }
+
 
   const removeBlog = async (blogId) => {
     try {
@@ -59,6 +87,7 @@ const App = () => {
     }
   }
 
+
   const submitLogin = async (userObject) => {
     try {
       const newUser = await loginService.login(userObject)
@@ -69,10 +98,8 @@ const App = () => {
     }
     catch (exception) {
       console.log('exception:', exception)
-      setNewNotificationMessage('wrong credentials')
-      setTimeout(() => {
-        setNewNotificationMessage(null)
-      }, 3000)
+      dispatch(setNotification('wrong credentials'))
+      setTimeout(() => dispatch(clearNotification()), 3000)
     }
   }
 
@@ -106,7 +133,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={notificationMessage} />
+        <Notification />
         {loginForm()}
       </div>
     )
@@ -126,8 +153,10 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={notificationMessage} />
+      <Notification />
       <p>{user.name} logged in</p>
+      {/*console.log(store.getState())*/}
+      {/*store.getState().map(blog => <div key={blog.url}>{blog.title}   {blog.author}</div>)*/}
       {blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
         <Blog key={blog.id} blog={blog} handleRemove={removeBlog} username={user.username} />
       )}
