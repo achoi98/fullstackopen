@@ -1,4 +1,5 @@
 import blogService from '../services/blogs'
+import { clearNotification, setNotification } from './notificationReducer'
 const blogReducer = (state = [], action) => {
   switch (action.type) {
   case 'NEW_BLOG':
@@ -28,6 +29,8 @@ export const createBlog = (blogObject) => {
       type: 'NEW_BLOG',
       data: newBlog
     })
+    dispatch(setNotification(`a new blog '${newBlog.title}' by ${newBlog.author}`))
+    setTimeout(() => dispatch(clearNotification))
   }
 }
 
