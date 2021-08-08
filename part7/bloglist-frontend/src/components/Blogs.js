@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, connect } from 'react-redux'
+import { incrementLikes, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog }) => {
+const Blog = (props) => {
   const [visible, setVisible] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -10,8 +11,8 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-
-
+  const blog = props.blog
+  //console.log('blog:', blog)
   const label = visible ? 'hide' : 'view'
 
   return (
@@ -24,20 +25,26 @@ const Blog = ({ blog }) => {
       {visible && (
         <div>
           <p>{blog.url}</p>
-          <p>Likes: {blog.likes}</p>
+          <p>Likes: {blog.likes} <button onClick={(e) => {
+            e.preventDefault()
+            props.handleLike(blog)}}>Like</button></p>
           <p>Submitted by {blog.user ? blog.user.username : 'unknown' }</p>
+          <button onClick={(e) => {
+            e.preventDefault()
+            props.handleRemove(blog.id)}}>remove blog</button>
         </div>
       )}
     </div>
   )
 }
 
-const Blogs = () => {
+const Blogs = (props) => {
   const blogs = useSelector(state => state.blogs)
   if (Array.isArray(blogs)) {
     return (
       <ul>
-        {blogs.map(blog => <Blog blog={blog} key={blog.id}/>)}
+        {blogs.map(blog => <Blog blog={blog} key={blog.id} handleLike={props.incrementLikes}
+          handleRemove={props.removeBlog}/>)}
       </ul>
     )
   }
@@ -49,4 +56,7 @@ const Blogs = () => {
     )
   }
 }
-export default Blogs
+export default connect(
+  null,
+  { incrementLikes, removeBlog }
+)(Blogs)

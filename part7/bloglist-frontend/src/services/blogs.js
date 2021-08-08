@@ -47,6 +47,7 @@ const remove = async (blogId) => {
   try {
     const response = await axios.delete(blogUrl, config)
     console.log('(remove)response:', response)
+    return response.data
   }
   catch (exception) {
     console.log('(remove)exception:', exception)

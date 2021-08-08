@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { clearNotification, setNotification } from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
-import Blog from './components/Blog'
+//import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
@@ -10,31 +10,7 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Blogs from './components/Blogs'
 import { initializeBlogs } from './reducers/blogReducer'
-/*
-const initialBlogs = [
-  {
-    title: 'blog 1',
-    author: 'author 1',
-    url: 'url 1'
-  },
-  {
-    title: 'blog 2',
-    author: 'author 2',
-    url: 'url 2'
-  }
-]
 
-const blogReducer = (state = initialBlogs, action) => {
-  switch (action.type) {
-  case 'NEW_BLOG':
-    return [...state, action.data]
-  case 'INIT_BLOGS':
-    return state
-  default:
-    return state
-  }
-}
-*/
 const App = () => {
   const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
@@ -74,6 +50,7 @@ const App = () => {
   }
 
 
+  /*
   const removeBlog = async (blogId) => {
     try {
       await blogService.remove(blogId)
@@ -84,7 +61,7 @@ const App = () => {
     catch (exception) {
       console.log('(removeBlog)exception:', exception)
     }
-  }
+  }*/
 
 
   const submitLogin = async (userObject) => {
@@ -148,7 +125,7 @@ const App = () => {
     )
   }
   */
-  const hideBlogs = false
+  //const hideBlogs = false
   return (
     <div>
       <h2>blogs</h2>
@@ -156,9 +133,10 @@ const App = () => {
       <p>{user.name} logged in</p>
       {/*console.log(store.getState())*/}
       {/*store.getState().map(blog => <div key={blog.url}>{blog.title}   {blog.author}</div>)*/}
-      {hideBlogs && blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
-        <Blog key={blog.id} blog={blog} handleRemove={removeBlog} username={user.username} />
-      )}
+
+      {/*hideBlogs && blogs.map(blog => blog).sort((a, b) => { return b.likes - a.likes }).map(blog =>
+        <Blogs key={blog.id} blog={blog} handleRemove={removeBlog} username={user.username} />
+      )*/}
       <div>
         <Blogs />
       </div>

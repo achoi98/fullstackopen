@@ -19,6 +19,7 @@ const Blog = ({ blog, handleRemove, username }) => {
     setVisible(!visible)
   }
   //console.log('username:', username, ' blog username:', blog.user.username)
+
   const handleLike = async () => {
     const blogId = blog.id
     console.log('(handleLike)blog:', blog)

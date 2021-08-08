@@ -5,6 +5,16 @@ const blogReducer = (state = [], action) => {
     return [...state, action.data]
   case 'INIT_BLOGS':
     return action.data
+  case 'LIKE': {
+    const blogs = state
+    console.log('state:', blogs)
+    const id = action.data.id
+    const mapped = blogs.map(blog => blog.id === id ? { ...blog, likes: blog.likes + 1 } : blog)
+    return mapped
+  }
+  case 'REMOVE': {
+    return action.data
+  }
   default:
     return state
   }
@@ -31,4 +41,27 @@ export const initializeBlogs = () => {
   }
 }
 
+export const incrementLikes = blogObject => {
+  return async dispatch => {
+    const updatedBlog = { ...blogObject, likes: blogObject.likes + 1 }
+    const newBlog = await blogService.update(updatedBlog)
+    //console.log('blogReducer.incrementLikes.response:', newBlog)
+    dispatch({
+      type: 'LIKE',
+      data: newBlog
+    })
+  }
+}
+
+export const removeBlog = (id) => {
+  return async dispatch => {
+    await blogService.remove(id)
+    const updatedBlogs = await blogService.getAll()
+    console.log('updated blogs after removing:', updatedBlogs)
+    dispatch({
+      type: 'REMOVE',
+      data: updatedBlogs
+    })
+  }
+}
 export default blogReducer
